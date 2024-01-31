@@ -1,0 +1,111 @@
+.user-input-container{
+    margin: 36px;
+    display: flex;
+    gap: 8px;
+    flex-direction: row;
+    justify-content: center;
+}
+.request-input{
+    width: 272px;
+    border-radius: 4px;
+    border: 1px solid #808080;
+    padding: 8px 16px;
+    font-family: Montserrat;
+
+    color: #2E2F42;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    transition: 300ms all ease;
+    outline: none;
+}
+.request-input::placeholder{
+    color: #808080;
+    font-family: Montserrat;
+}
+
+.request-input:hover{
+    border: 1px solid #000;
+}
+.request-input:focus{
+    border: 1px solid #4E75FF;
+}
+
+.btn{
+    border-radius: 8px;
+    background: #4E75FF;
+    font-family: Montserrat;
+
+    border: none;
+    padding: 8px 16px;
+    height: fit-content;
+    width: fit-content;
+
+    color: #FFF;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    transition: 300ms all ease;
+}
+.btn:hover{
+    background: #6C8CFF;
+}
+
+.gallery{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 0 15px 0 15px;
+    justify-content: flex-start;
+}
+.gallery-item{
+    width: 350px;
+    height: 250px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.096);
+    transition: 300ms all ease;
+    border: 1px solid rgba(0, 0, 0, 0.062);
+    position: relative;
+}
+.gallery-item:hover{
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.036);
+    transform: scale(1.02);
+}
+.info-list{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #ffffff;
+    width: 100%;
+}
+.gallery-item-img{
+    width: 350px;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+    max-width: 100%;
+}
+.info-name{
+    padding-top: 7px;
+    font-weight: 500;
+    font-size: 15px;
+}
+.info-value{
+    font-weight: 300;
+    font-size: 15px;
+    text-align: center;
+    padding-bottom: 7px;
+}
+.more{
+    display: none;
+    margin-top: 36px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
