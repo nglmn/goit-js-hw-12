@@ -99,6 +99,7 @@ function popupPictureWindow() {
         captionPosition: 'bottom',
     });
     lightbox.show();
+    lightbox.refresh();
 }
 function scrollGallery() {
     const galleryItem = document.querySelector('.gallery-item');
