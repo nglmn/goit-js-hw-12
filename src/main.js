@@ -1,8 +1,11 @@
+'use strict';
 import axios from "axios";
 import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
+import { renderContent } from "./js/renderMarkup";
 
 const form = document.querySelector('.form'),
     gallery = document.querySelector('.gallery'),
@@ -11,51 +14,51 @@ const form = document.querySelector('.form'),
 
 let request = null;
 let page = 1;
-const per_page = 50;
+const per_page = 15;
 let numberLastPage = null;
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', onFormSubmit);
+moreBtn.addEventListener('click', paginationElements)
+
+async function onFormSubmit(e) {
     e.preventDefault();
     request = e.target.elements.input.value.trim();
     try {
-        form.reset();
-        gallery.innerHTML = '';
-        page = 1;
-        showSpinner(true);
+        resetForm();
         const response = await fetch();
+        showSpinner(true);
         renderContent(response);
         showSpinner(false);
         showMoreBtn(true);
     } catch (error) {
-        console.log(error);
+        iziToast.error({
+            title: 'Error',
+            message: error.message
+        })
     }
-    let lightbox = new SimpleLightbox('.gallery a', {
-        captions: true,
-        captionType: 'attr',
-        captionsData: 'title',
-        captionDelay: 250,
-        captionPosition: 'bottom',
-    });
-    lightbox.show();
-})
+    popupPictureWindow();
+}
 
-moreBtn.addEventListener('click', async () => {
+async function paginationElements() {
     page++;
     showMoreBtn(false);
     showSpinner(true);
     const response = await fetch();
-    if (page < numberLastPage) {
+    if (page !== numberLastPage) {
         renderContent(response);
+        scrollGallery();
         showSpinner(false);
-        showMoreBtn(true)
+        showMoreBtn(true);
     } else {
         showMoreBtn(false);
         showSpinner(false);
         reportTheEndSearch();
     }
-})
+    popupPictureWindow();
+}
 
 async function fetch() {
+    const API_KEY = '41991233-e464ef3fed32efbb52a55d5bb'
     const instance = axios.create({
         baseURL: 'https://pixabay.com'
     });
@@ -64,55 +67,21 @@ async function fetch() {
         per_page,
         orientation: 'horizontal',
         image_type: 'photo',
-        safesearch: true,
     }
-    const response = await instance.get(`/api/?key=41991233-e464ef3fed32efbb52a55d5bb&q=${request}`, { params });
-    numberLastPage = Math.ceil(response.data.totalHits / per_page);
+    const response = await instance.get(`/api/?key=${API_KEY}&q=${request}`, { params });
+    numberLastPage = Math.floor(response.data.totalHits / per_page);
     return response.data;
 }
-
-function renderContent({ hits }) {
-    const markup = hits.map(({ largeImageURL, webformatURL, likes, views, comments, downloads }) => {
-        return `
-        <li class="gallery-item">
-        <a href="${largeImageURL}">
-        <img
-        src="${webformatURL}"
-        alt=""
-        class="gallery-item-img"
-        width="350"
-        height="200"/>
-        </a>
-        <div class="info-wrapper">
-        <ul class="info-list">
-        <li class="info-item">
-        <p class="info-name">Likes</p>
-        <p class="info-value">${likes}</p>
-        </li>
-        <li class="info-item">
-        <p class="info-name">Viewes</p>
-        <p class="info-value">${views}</p>
-        </li>
-        <li class="info-item">
-        <p class="info-name">Comments</p>
-        <p class="info-value">${comments}</p>
-        </li>
-        <li class="info-item">
-        <p class="info-name">Downloads</p>
-        <p class="info-value">${downloads}</p>
-        </li>
-        </ul>
-        </div>
-        </li>`
-    }).join('');
-    gallery.innerHTML += markup;
-}
-
 function showMoreBtn(show) {
     return show ? moreBtn.style.display = 'block' : moreBtn.style.display = 'none';
 }
 function showSpinner(show) {
     return show ? spinner.style.visibility = 'visible' : spinner.style.visibility = 'hidden';
+}
+function resetForm() {
+    form.reset();
+    gallery.innerHTML = '';
+    page = 1;
 }
 function reportTheEndSearch() {
     const noMorePagesMessage = document.createElement('p');
@@ -120,4 +89,21 @@ function reportTheEndSearch() {
     noMorePagesMessage.classList.add('message');
     noMorePagesMessage.textContent = noMoreText;
     gallery.parentNode.appendChild(noMorePagesMessage)
+}
+function popupPictureWindow() {
+    let lightbox = new SimpleLightbox('.gallery a', {
+        captions: true,
+        captionType: 'attr',
+        captionsData: 'title',
+        captionDelay: 250,
+        captionPosition: 'bottom',
+    });
+    lightbox.show();
+}
+function scrollGallery() {
+    const galleryItem = document.querySelector('.gallery-item');
+    let height = galleryItem.getBoundingClientRect().height;
+    height = Math.round(height);
+    const scrollByTimes = 2;
+    window.scrollBy(0, height * scrollByTimes);
 }
