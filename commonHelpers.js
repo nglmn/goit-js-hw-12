@@ -1,8 +1,8 @@
-import{S as L,a as w}from"./assets/vendor-0cc93ea0.js";(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const t of document.querySelectorAll('link[rel="modulepreload"]'))a(t);new MutationObserver(t=>{for(const n of t)if(n.type==="childList")for(const i of n.addedNodes)i.tagName==="LINK"&&i.rel==="modulepreload"&&a(i)}).observe(document,{childList:!0,subtree:!0});function o(t){const n={};return t.integrity&&(n.integrity=t.integrity),t.referrerpolicy&&(n.referrerPolicy=t.referrerpolicy),t.crossorigin==="use-credentials"?n.credentials="include":t.crossorigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function a(t){if(t.ep)return;t.ep=!0;const n=o(t);fetch(t.href,n)}})();const f=document.querySelector(".form"),p=document.querySelector(".gallery"),u=document.querySelector(".more"),d=document.querySelector(".spinner");let y=null,c=1;const m=50;let h=null;f.addEventListener("submit",async e=>{e.preventDefault(),y=e.target.elements.input.value.trim();try{f.reset(),p.innerHTML="",c=1,r(!0);const o=await g();b(o),r(!1),l(!0)}catch(o){console.log(o)}new L(".gallery a",{captions:!0,captionType:"attr",captionsData:"title",captionDelay:250,captionPosition:"bottom"}).show()});u.addEventListener("click",async()=>{c++,l(!1),r(!0);const e=await g();c<h?(b(e),r(!1),l(!0)):(l(!1),r(!1),S())});async function g(){const e=w.create({baseURL:"https://pixabay.com"}),s={page:c,per_page:m,orientation:"horizontal",image_type:"photo",safesearch:!0},o=await e.get(`/api/?key=41991233-e464ef3fed32efbb52a55d5bb&q=${y}`,{params:s});return h=Math.ceil(o.data.totalHits/m),o.data}function b({hits:e}){const s=e.map(({largeImageURL:o,webformatURL:a,likes:t,views:n,comments:i,downloads:v})=>`
+import{i as L,a as S,S as $}from"./assets/vendor-b52d9f5e.js";(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))i(n);new MutationObserver(n=>{for(const o of n)if(o.type==="childList")for(const r of o.addedNodes)r.tagName==="LINK"&&r.rel==="modulepreload"&&i(r)}).observe(document,{childList:!0,subtree:!0});function s(n){const o={};return n.integrity&&(o.integrity=n.integrity),n.referrerpolicy&&(o.referrerPolicy=n.referrerpolicy),n.crossorigin==="use-credentials"?o.credentials="include":n.crossorigin==="anonymous"?o.credentials="omit":o.credentials="same-origin",o}function i(n){if(n.ep)return;n.ep=!0;const o=s(n);fetch(n.href,o)}})();const q=document.querySelector(".gallery");function m({hits:e}){const t=e.map(({largeImageURL:s,webformatURL:i,likes:n,views:o,comments:r,downloads:w})=>`
         <li class="gallery-item">
-        <a href="${o}">
+        <a href="${s}">
         <img
-        src="${a}"
+        src="${i}"
         alt=""
         class="gallery-item-img"
         width="350"
@@ -12,21 +12,21 @@ import{S as L,a as w}from"./assets/vendor-0cc93ea0.js";(function(){const s=docum
         <ul class="info-list">
         <li class="info-item">
         <p class="info-name">Likes</p>
-        <p class="info-value">${t}</p>
-        </li>
-        <li class="info-item">
-        <p class="info-name">Viewes</p>
         <p class="info-value">${n}</p>
         </li>
         <li class="info-item">
+        <p class="info-name">Viewes</p>
+        <p class="info-value">${o}</p>
+        </li>
+        <li class="info-item">
         <p class="info-name">Comments</p>
-        <p class="info-value">${i}</p>
+        <p class="info-value">${r}</p>
         </li>
         <li class="info-item">
         <p class="info-name">Downloads</p>
-        <p class="info-value">${v}</p>
+        <p class="info-value">${w}</p>
         </li>
         </ul>
         </div>
-        </li>`).join("");p.innerHTML+=s}function l(e){return e?u.style.display="block":u.style.display="none"}function r(e){return e?d.style.visibility="visible":d.style.visibility="hidden"}function S(){const e=document.createElement("p"),s="We're sorry, but you've reached the end of search results.";e.classList.add("message"),e.textContent=s,p.parentNode.appendChild(e)}
+        </li>`).join("");q.innerHTML+=t}const d=document.querySelector(".form"),y=document.querySelector(".gallery"),u=document.querySelector(".more"),p=document.querySelector(".spinner");let g=null,c=1;const f=15;let h=null;d.addEventListener("submit",M);u.addEventListener("click",E);async function M(e){e.preventDefault(),g=e.target.elements.input.value.trim();try{x();const t=await b();l(!0),m(t),l(!1),a(!0)}catch(t){L.error({title:"Error",message:t.message})}v()}async function E(){c++,a(!1),l(!0);const e=await b();c!==h?(m(e),T(),l(!1),a(!0)):(a(!1),l(!1),P()),v()}async function b(){const e="41991233-e464ef3fed32efbb52a55d5bb",t=S.create({baseURL:"https://pixabay.com"}),s={page:c,per_page:f,orientation:"horizontal",image_type:"photo"},i=await t.get(`/api/?key=${e}&q=${g}`,{params:s});return h=Math.floor(i.data.totalHits/f),i.data}function a(e){return e?u.style.display="block":u.style.display="none"}function l(e){return e?p.style.visibility="visible":p.style.visibility="hidden"}function x(){d.reset(),y.innerHTML="",c=1}function P(){const e=document.createElement("p"),t="We're sorry, but you've reached the end of search results.";e.classList.add("message"),e.textContent=t,y.parentNode.appendChild(e)}function v(){new $(".gallery a",{captions:!0,captionType:"attr",captionsData:"title",captionDelay:250,captionPosition:"bottom"}).show()}function T(){let t=document.querySelector(".gallery-item").getBoundingClientRect().height;t=Math.round(t);const s=2;window.scrollBy(0,t*s)}
 //# sourceMappingURL=commonHelpers.js.map
