@@ -6,13 +6,14 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
 import { renderContent } from "./js/renderMarkup";
+import { iziToastError } from "./js/customIziToast";
 
 const form = document.querySelector('.form'),
     gallery = document.querySelector('.gallery'),
     moreBtn = document.querySelector('.more'),
     spinner = document.querySelector('.spinner');
 
-let request = null;
+let searchQuery = null;
 let page = 1;
 const per_page = 15;
 let numberLastPage = null;
@@ -22,19 +23,21 @@ moreBtn.addEventListener('click', paginationElements)
 
 async function onFormSubmit(e) {
     e.preventDefault();
-    request = e.target.elements.input.value.trim();
+    searchQuery = e.target.elements.input.value.trim();
     try {
         resetForm();
         const response = await fetch();
-        showSpinner(true);
-        renderContent(response);
-        showSpinner(false);
-        showMoreBtn(true);
+        if (response.total != 0) {
+            numberLastPage = Math.round(response.totalHits / per_page)
+            showSpinner(true);
+            renderContent(response);
+            showSpinner(false);
+            showMoreBtn(true);
+        } else {
+            iziToast.error(iziToastError);
+        }
     } catch (error) {
-        iziToast.error({
-            title: 'Error',
-            message: error.message
-        })
+        console.log(error.status);
     }
     popupPictureWindow();
 }
@@ -44,8 +47,8 @@ async function paginationElements() {
     showMoreBtn(false);
     showSpinner(true);
     const response = await fetch();
-    if (page !== numberLastPage) {
-        renderContent(response);
+    renderContent(response);
+    if (page < numberLastPage) {
         scrollGallery();
         showSpinner(false);
         showMoreBtn(true);
@@ -68,15 +71,14 @@ async function fetch() {
         orientation: 'horizontal',
         image_type: 'photo',
     }
-    const response = await instance.get(`/api/?key=${API_KEY}&q=${request}`, { params });
-    numberLastPage = Math.floor(response.data.totalHits / per_page);
+    const response = await instance.get(`/api/?key=${API_KEY}&q=${searchQuery}`, { params });
     return response.data;
 }
 function showMoreBtn(show) {
-    return show ? moreBtn.style.display = 'block' : moreBtn.style.display = 'none';
+    show ? moreBtn.style.display = 'block' : moreBtn.style.display = 'none';
 }
 function showSpinner(show) {
-    return show ? spinner.style.visibility = 'visible' : spinner.style.visibility = 'hidden';
+    show ? spinner.style.visibility = 'visible' : spinner.style.visibility = 'hidden';
 }
 function resetForm() {
     form.reset();
