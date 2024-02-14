@@ -11,7 +11,8 @@ import { iziToastError } from "./js/customIziToast";
 const form = document.querySelector('.form'),
     gallery = document.querySelector('.gallery'),
     moreBtn = document.querySelector('.more'),
-    spinner = document.querySelector('.spinner');
+    spinner = document.querySelector('.spinner'),
+    lastPageMessage = document.querySelector('.message');
 
 let searchQuery = null;
 let page = 1;
@@ -27,19 +28,24 @@ async function onFormSubmit(e) {
     try {
         resetForm();
         const response = await fetch();
-        if (response.total != 0) {
+        if (response.total != 0 && response.total > per_page) {
             numberLastPage = Math.round(response.totalHits / per_page)
             showSpinner(true);
             renderContent(response);
             showSpinner(false);
             showMoreBtn(true);
-        } else {
-            iziToast.error(iziToastError);
+        }
+        if (response.total != 0 && response.total < per_page) {
+            renderContent(response);
+            lastPageMessage.style.display = 'block';
+        }
+        if (response.total === 0) {
+            iziToast.show(iziToastError);
         }
     } catch (error) {
         console.log(error.status);
     }
-    popupPictureWindow();
+    popupPictureWindow().refresh();
 }
 
 async function paginationElements() {
@@ -55,9 +61,9 @@ async function paginationElements() {
     } else {
         showMoreBtn(false);
         showSpinner(false);
-        reportTheEndSearch();
+        lastPageMessage.style.display = 'block'
     }
-    popupPictureWindow();
+    popupPictureWindow().refresh();
 }
 
 async function fetch() {
@@ -84,13 +90,9 @@ function resetForm() {
     form.reset();
     gallery.innerHTML = '';
     page = 1;
-}
-function reportTheEndSearch() {
-    const noMorePagesMessage = document.createElement('p');
-    const noMoreText = "We're sorry, but you've reached the end of search results.";
-    noMorePagesMessage.classList.add('message');
-    noMorePagesMessage.textContent = noMoreText;
-    gallery.parentNode.appendChild(noMorePagesMessage)
+    showSpinner(false);
+    showMoreBtn(false);
+    lastPageMessage.style.display = 'none';
 }
 function popupPictureWindow() {
     let lightbox = new SimpleLightbox('.gallery a', {
@@ -101,8 +103,9 @@ function popupPictureWindow() {
         captionPosition: 'bottom',
     });
     lightbox.show();
-    lightbox.refresh();
+    return lightbox;
 }
+popupPictureWindow();
 function scrollGallery() {
     const galleryItem = document.querySelector('.gallery-item');
     let height = galleryItem.getBoundingClientRect().height;
